@@ -8,31 +8,25 @@ import com.peter.lockscreen.R;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.PixelFormat;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	
-	private WindowManager  mWindowManager = null;
 	private boolean mUpdateTime = true;
-	private View mView = null;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE); 
         Window win = getWindow();
-        mWindowManager = getWindowManager();  
-        WindowManager.LayoutParams params = win.getAttributes();
-        params.flags |= WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD;
-        mView = getLayoutInflater().inflate(R.layout.activity_main, null);
-        final TextView mTimeView = (TextView) mView.findViewById(R.id.time);
-        final TextView mDateView = (TextView) mView.findViewById(R.id.date);
+        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        setContentView(R.layout.activity_main);
+        final TextView mTimeView = (TextView) findViewById(R.id.time);
+        final TextView mDateView = (TextView) findViewById(R.id.date);
         
         new Thread(new Runnable() {
 
@@ -63,29 +57,15 @@ public class MainActivity extends Activity {
 			}
         	
         }).start();
-        
-        addView();
-        
         startService(new Intent(MainActivity.this, LockService.class));
     }
 
-    private void addView() {
-    	LayoutParams params = new LayoutParams();  
-        params.width = LayoutParams.MATCH_PARENT;  
-        params.height = LayoutParams.MATCH_PARENT;  
-        params.type = LayoutParams.TYPE_SYSTEM_ERROR;  
-        params.flags = 1280;  
-        params.format=PixelFormat.RGBA_8888;
-        mWindowManager.addView(mView, params); 
-    }
-
     public void doFinish() {
-    	mView.post(new Runnable() {
+    	runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
 				mUpdateTime = false;
-		    	mWindowManager.removeView(mView);
 		    	finish();
 			}
 		});

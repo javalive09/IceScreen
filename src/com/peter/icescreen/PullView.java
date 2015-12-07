@@ -81,7 +81,9 @@ public class PullView extends ViewGroup {
 			mTouchState = TOUCH_STATE_REST;
 			break;
     	}
-        return mTouchState != TOUCH_STATE_REST;
+    	boolean result = mTouchState != TOUCH_STATE_REST;
+    	Log.i("peter", "onInterceptTouchEvent result = " + result);
+        return result;
     }
    
     public boolean onTouchEvent(MotionEvent event) {
@@ -121,7 +123,8 @@ public class PullView extends ViewGroup {
 			}
     		break;
     	}
-		return false;
+    	Log.i("peter", "onTouchEvent result = " + false);
+		return true;
     }
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -141,7 +144,9 @@ public class PullView extends ViewGroup {
 	
 	public boolean dispatchTouchEvent(MotionEvent event) {
 		Log.i("peter", "event = " + event);
-		return super.dispatchTouchEvent(event);
+		boolean result = super.dispatchTouchEvent(event);
+		Log.i("peter", "dispatchTouchEvent result = " + result);
+		return result;
 	}
 	
 }

@@ -40,9 +40,13 @@ public class LockService extends Service {
 				KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("");
 				keyguardLock.disableKeyguard();//解锁系统锁屏
 				
-				Intent in = new Intent(context, MainActivity.class);
-				in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(in);
+				if (keyguardManager.inKeyguardRestrictedInputMode()) {
+					// 处于锁屏状态
+					Intent in = new Intent(context, MainActivity.class);
+					in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(in);
+				}
+				
 			}
 		}
 	};
